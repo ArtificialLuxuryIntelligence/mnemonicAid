@@ -11,6 +11,7 @@ import {
 //import ???
 
 document.addEventListener("DOMContentLoaded", function () {
+  //NOTE: CURRENT NOT USING THIS TRIE. all word searches are done using the regex match
   //convert words array to trie
   const wordTrie = new Trie();
   words.forEach((word) => wordTrie.insert(word));
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // find all words given array of form [["h"],["t"],["r"]]
   function findWords(arr, words) {
+    // could use trie here to replace words with only words that start with non regexconsons (except for the first sound/letter of the number)
     arr = arr.map((a) => a[0]);
     let re = new RegExp(
       "\\b" +
@@ -67,11 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   //generate words
   function generateWords(number, chunkSize) {
-    let sounds = mapToSounds(number, chunkSize); //chunk number and convert numbers to sounds
+    let sounds = mapToSounds(number, chunkSize); //chunk number and map numbers to sounds
     let allPerm = sounds.map((a) => permutations(a)); // generate all permutations including all possible matching sounds
     allPerm = allPerm.map((a) => multiDimensionalUnique(a)); // remove dupes
-    // console.log(wordTrie.find("hel"));
 
+    //NOTE: this probably isn't the most efficient method (nested maps and findwords function filters over all words.)
     let results = allPerm.map((group) => group.map((c) => findWords(c, words))); //find matching words for all chunks
     results = results.map((a) => a.flat());
     return results;
